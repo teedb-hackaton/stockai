@@ -33,7 +33,7 @@ export default function SignupForm() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       toast.success('Account created successfully');
-      router.push('/logged'); // Adjust the path to your logged-in page
+      router.push('/'); // Adjust the path to your logged-in page
     } catch (error) {
       toast.error("error");
     } finally {
@@ -46,7 +46,7 @@ export default function SignupForm() {
     try {
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
       toast.success('Logged in with Google');
-      router.push('/logged'); // Adjust the path to your logged-in page
+      router.push('/'); // Adjust the path to your logged-in page
     } catch (error) {
       toast.error("error");
     } finally {
