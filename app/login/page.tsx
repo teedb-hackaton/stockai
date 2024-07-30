@@ -7,7 +7,7 @@ export default async function LoginPage() {
   const session = (await getSession()) as Session
 
   if (session) {
-    redirect('/')
+    redirect('/login')
   }
 
   return (
