@@ -3,16 +3,19 @@
 import { useFormState, useFormStatus } from 'react-dom'
 import { authenticate } from '@/app/login/actions'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from './ui/icons'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { auth, signInWithEmailAndPassword } from '@/utils/firebase'
 
 export default function LoginForm() {
   const router = useRouter()
   const [result, dispatch] = useFormState(authenticate, undefined)
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+ 
   useEffect(() => {
     if (result) {
       if (result.type === 'error') {
@@ -26,7 +29,15 @@ export default function LoginForm() {
 
   return (
     <form
-      action={dispatch}
+      action={async () => {
+        dispatch
+        try {
+          await signInWithEmailAndPassword(auth, email, password)
+          toast.success('Logged in successfully')
+        } catch (error) {
+          toast.error('error')
+        }
+      }}
       className="flex flex-col items-center gap-4 space-y-3"
     >
       <div className="w-full flex-1 rounded-lg border bg-white px-6 pb-4 pt-8 shadow-md  md:w-96 dark:bg-zinc-950">
@@ -47,6 +58,7 @@ export default function LoginForm() {
                 name="email"
                 placeholder="Enter your email address"
                 required
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
@@ -66,6 +78,7 @@ export default function LoginForm() {
                 placeholder="Enter password"
                 required
                 minLength={6}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>

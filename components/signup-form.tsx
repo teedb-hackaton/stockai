@@ -3,15 +3,18 @@
 import { useFormState, useFormStatus } from 'react-dom'
 import { signup } from '@/app/signup/actions'
 import Link from 'next/link'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from './ui/icons'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { auth, createUserWithEmailAndPassword } from '@/utils/firebase'
 
 export default function SignupForm() {
   const router = useRouter()
-  const [result, dispatch] = useFormState(signup, undefined)
+  const [result, dispatch] = useFormState(signup, undefined);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (result) {
@@ -26,7 +29,15 @@ export default function SignupForm() {
 
   return (
     <form
-      action={dispatch}
+      action={async () => {
+        dispatch
+        try {
+          await createUserWithEmailAndPassword(auth, email, password)
+          toast.success('Account created successfully')
+        } catch (error) {
+          toast.error('error')
+        }
+      }}
       className="flex flex-col items-center gap-4 space-y-3"
     >
       <div className="w-full flex-1 rounded-lg border bg-white px-6 pb-4 pt-8 shadow-md md:w-96 dark:bg-zinc-950">
