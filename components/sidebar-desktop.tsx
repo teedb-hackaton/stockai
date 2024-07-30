@@ -1,10 +1,10 @@
 import { Sidebar } from '@/components/sidebar'
-import { Session } from '@/lib/types'
 
+import { getSession } from '@/auth'
 import { ChatHistory } from '@/components/chat-history'
 
 export async function SidebarDesktop() {
-  const session = {} as Session
+  const session = await getSession()
 
   if (!session?.user?.id) {
     return null

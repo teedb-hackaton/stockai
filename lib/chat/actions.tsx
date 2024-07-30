@@ -9,7 +9,7 @@ import {
   createStreamableValue
 } from 'ai/rsc'
 import { openai } from '@ai-sdk/openai'
-import { Session } from '@/lib/types'
+
 import {
   spinner,
   BotCard,
@@ -34,7 +34,7 @@ import {
 import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat, Message } from '@/lib/types'
-
+import { getSession } from '@/auth'
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
@@ -504,7 +504,8 @@ export const AI = createAI<AIState, UIState>({
   onGetUIState: async () => {
     'use server'
 
-    const session = {} as Session
+    const session = await getSession()
+
     if (session && session.user) {
       const aiState = getAIState() as Chat
 
@@ -519,7 +520,7 @@ export const AI = createAI<AIState, UIState>({
   onSetAIState: async ({ state }) => {
     'use server'
 
-    const session = {} as Session
+    const session = await getSession()
 
     if (session && session.user) {
       const { chatId, messages } = state

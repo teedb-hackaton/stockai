@@ -3,8 +3,9 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { kv } from '@vercel/kv'
+
+import { getSession } from '@/auth'
 import { type Chat } from '@/lib/types'
-import { Session } from '@/lib/types'
 
 export async function getChats(userId?: string | null) {
   if (!userId) {
@@ -40,7 +41,7 @@ export async function getChat(id: string, userId: string) {
 }
 
 export async function removeChat({ id, path }: { id: string; path: string }) {
-  const session = {} as Session
+  const session = await getSession()
 
   if (!session) {
     return {
@@ -65,7 +66,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 }
 
 export async function clearChats() {
-  const session = {} as Session
+  const session = await getSession()
 
   if (!session?.user?.id) {
     return {
@@ -101,7 +102,7 @@ export async function getSharedChat(id: string) {
 }
 
 export async function shareChat(id: string) {
-  const session = {} as Session
+  const session = await getSession()
 
   if (!session?.user?.id) {
     return {
@@ -128,7 +129,7 @@ export async function shareChat(id: string) {
 }
 
 export async function saveChat(chat: Chat) {
-  const session = {} as Session
+  const session = await getSession()
 
   if (session && session.user) {
     const pipeline = kv.pipeline()
